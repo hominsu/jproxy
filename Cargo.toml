@@ -1,0 +1,31 @@
+[package]
+name = "jproxy"
+version = "0.1.0"
+edition = "2021"
+authors = [
+    "Homing So <i@homing.so>"
+]
+description = "Just a proxy"
+
+[profile.release]
+opt-level = 3
+strip = true
+lto = true
+codegen-units = 1
+panic = "abort"
+
+[dependencies]
+serde = { version = "1", features = ["derive"] }
+tokio = { version = "1.42", features = ["io-util", "macros", "rt-multi-thread", "signal"] }
+
+# tracing
+tracing = "0.1.41"
+tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+
+# cli
+argh = { version = "0.1.13" }
+
+# hot reload config
+glob = { version = "0.3.2" }
+notify = { version = "7.0.0" }
+config = { version = "0.15.4", features = ["toml", "json", "yaml", "ini", "ron", "json5"] }
