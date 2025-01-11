@@ -1,4 +1,5 @@
 mod config;
+mod http;
 
 pub use config::manager;
 
