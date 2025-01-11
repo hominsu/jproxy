@@ -1,44 +1,46 @@
+mod error;
+mod proxy;
 mod skeleton;
-use argh::FromArgs;
-use std::future::IntoFuture;
-use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-#[derive(FromArgs)]
-#[argh(description = "Just a proxy")]
-struct Args {
-    #[argh(
-        option,
-        short = 'c',
-        default = "String::from(\"configs\")",
-        description = "config path, eg: --conf ./configs"
-    )]
-    conf: String,
+use clap::{Args, Parser, Subcommand};
 
-    #[argh(switch, short = 'v', description = "print version and quit")]
-    version: bool,
+type Result<T, E = error::Error> = std::result::Result<T, E>;
+
+#[derive(Parser)]
+#[clap(author, version, about, arg_required_else_help = true)]
+#[command(args_conflicts_with_subcommands = true)]
+struct Opt {
+    #[clap(subcommand)]
+    commands: Commands,
 }
 
-#[tokio::main]
-async fn main() {
-    let args: Args = argh::from_env();
+#[derive(Subcommand)]
+pub enum Commands {
+    /// Run jproxy
+    Run(Bootstrap),
+}
 
-    if args.version {
-        println!("http-proxy-ipv6-balancer v{}", env!("CARGO_PKG_VERSION"));
-        return;
-    }
+#[derive(Args, Clone)]
+pub struct Bootstrap {
+    /// Debug mode
+    #[clap(long, env = "JPROXY_DEBUG")]
+    debug: bool,
 
-    tracing_subscriber::registry()
-        .with(
-            tracing_subscriber::EnvFilter::try_from_default_env().unwrap_or_else(|_| {
-                format!("{}=trace,tower_http=debug", env!("CARGO_CRATE_NAME")).into()
-            }),
-        )
-        .with(tracing_subscriber::fmt::layer())
-        .init();
+    /// Config path, eg: --conf ./configs
+    #[clap(short, long, default_value = "configs")]
+    conf: String,
 
-    let manager = skeleton::manager(args.conf.as_str()).with_watcher(skeleton::shutdown_signal());
-    let _config = manager.config();
-    let manager_fut = manager.into_future();
+    /// Concurrent connections
+    #[clap(long, default_value = "1024")]
+    concurrent: usize,
+}
 
-    let _ = tokio::join!(manager_fut);
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let opt = Opt::parse();
+
+    match opt.commands {
+        Commands::Run(args) => proxy::run(args)?,
+    };
+
+    Ok(())
 }
