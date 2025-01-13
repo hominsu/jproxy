@@ -18,18 +18,28 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
-    let manager = manager(args.conf.as_str()).with_watcher(shutdown_signal());
-    let _config = manager.config();
-
-    let manager_fut = manager.into_future();
-
-    tokio::runtime::Builder::new_multi_thread()
+    let runtime = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
         .max_blocking_threads(args.concurrent)
-        .build()?
-        .block_on(async {
-            let _ = tokio::join!(manager_fut);
-        });
+        .build()?;
+
+    runtime.block_on(async move {
+        let manager = manager(args.conf.as_str()).with_watcher(shutdown_signal());
+        let config = manager.config();
+        let manager_fut = manager.into_future();
+
+        let http_proxy = crate::skeleton::http::HttpProxy {};
+        let addr = config.read().unwrap().bind.clone();
+        let listener = tokio::net::TcpListener::bind(addr).await.unwrap();
+
+        tracing::info!("listening on {}", listener.local_addr().unwrap());
+
+        let serve_fut = crate::skeleton::serve::serve(listener, http_proxy)
+            .with_graceful_shutdown(shutdown_signal())
+            .into_future();
+
+        let _ = tokio::join!(serve_fut, manager_fut);
+    });
 
     Ok(())
 }

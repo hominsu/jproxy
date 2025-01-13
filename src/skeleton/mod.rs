@@ -3,7 +3,7 @@ use tokio::signal;
 mod config;
 mod error;
 pub mod http;
-mod serve;
+pub mod serve;
 
 pub use config::manager;
 
