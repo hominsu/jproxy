@@ -22,17 +22,9 @@ pub enum Commands {
 
 #[derive(Args, Clone)]
 pub struct Bootstrap {
-    /// Debug mode
-    #[clap(long, env = "JPROXY_DEBUG")]
-    debug: bool,
-
     /// Config path, eg: --conf ./configs
     #[clap(short, long, default_value = "configs")]
     conf: String,
-
-    /// Concurrent connections
-    #[clap(long, default_value = "1024")]
-    concurrent: usize,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {

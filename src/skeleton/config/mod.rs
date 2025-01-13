@@ -10,10 +10,24 @@ use std::{
     time::Duration,
 };
 
-#[derive(Debug, Deserialize)]
-#[allow(unused)]
+#[derive(Clone, Debug, Deserialize)]
 pub struct Config {
+    /// Debug mode
+    ///
+    /// When enabled, the server will run in debug mode, providing more verbose logging.
+    pub debug: bool,
+
+    /// The address and port to bind the server to.
+    ///
+    /// This should be in the format of `address:port`. e.g.
+    /// - `127.0.0.1:3000` binds to localhost on port 3000.
+    /// - `0.0.0.0:3000` binds to all network interfaces on port 3000.
     pub bind: String,
+
+    /// Concurrent connections
+    ///
+    /// Specifies the limit of concurrent connections that the server can handle simultaneously.
+    pub concurrent: usize,
 }
 
 impl Config {

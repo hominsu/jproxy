@@ -1,11 +1,9 @@
 use tokio::signal;
 
-mod config;
+pub mod config;
 mod error;
 pub mod http;
 pub mod serve;
-
-pub use config::manager;
 
 pub async fn shutdown_signal() {
     let ctrl_c = async {
