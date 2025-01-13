@@ -7,5 +7,8 @@ pub enum Error {
     Hyper(#[from] hyper::Error),
 
     #[error(transparent)]
+    HyperLegacy(#[from] hyper_util::client::legacy::Error),
+
+    #[error(transparent)]
     Timeout(#[from] tokio::time::error::Elapsed),
 }

@@ -1,11 +1,11 @@
 use bytes::Bytes;
 use http::{Method, StatusCode};
 use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
-use hyper::{
-    body::Incoming, client::conn::http1::Builder, service::Service, upgrade::Upgraded, Request,
-    Response,
+use hyper::{body::Incoming, service::Service, upgrade::Upgraded, Request, Response};
+use hyper_util::{
+    client::legacy::Client,
+    rt::{TokioExecutor, TokioIo},
 };
-use hyper_util::rt::TokioIo;
 use std::{future::Future, io, pin::Pin};
 use tokio::net::TcpStream;
 
@@ -24,7 +24,9 @@ impl Service<Request<Incoming>> for HttpProxy {
         let proxy = self.clone();
 
         Box::pin(async move {
+            tracing::info!("{req:?}");
             match *req.method() {
+                // Handles HTTPS connections by establishing a tunnel via the CONNECT method
                 Method::CONNECT => {
                     if let Some(addr) = host_addr(req.uri()) {
                         tokio::task::spawn(async move {
@@ -47,27 +49,15 @@ impl Service<Request<Incoming>> for HttpProxy {
                         Ok(resp)
                     }
                 }
+                // Handles regular HTTP connections by forwarding the request to the destination
                 _ => {
-                    tracing::info!("{req:?}");
-
-                    let host = req.uri().host().expect("uri has no host");
-                    let port = req.uri().port_u16().unwrap_or(80);
-
-                    let stream = TcpStream::connect((host, port)).await.unwrap();
-                    let io = TokioIo::new(stream);
-
-                    let (mut sender, conn) = Builder::new()
-                        .preserve_header_case(true)
-                        .title_case_headers(true)
-                        .handshake(io)
+                    let resp = Client::builder(TokioExecutor::new())
+                        .http1_preserve_header_case(true)
+                        .http1_title_case_headers(true)
+                        .build_http()
+                        .request(req)
                         .await?;
-                    tokio::task::spawn(async move {
-                        if let Err(err) = conn.await {
-                            tracing::warn!("Connection failed: {:?}", err)
-                        }
-                    });
 
-                    let resp = sender.send_request(req).await?;
                     Ok(resp.map(|b| b.boxed()))
                 }
             }
@@ -82,7 +72,7 @@ impl HttpProxy {
 
         let (from_client, from_server) =
             tokio::io::copy_bidirectional(&mut upgraded, &mut server).await?;
-        tracing::debug!(
+        tracing::trace!(
             "client wrote {} bytes and received {} bytes",
             from_client,
             from_server
