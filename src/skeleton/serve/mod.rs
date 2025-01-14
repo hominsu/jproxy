@@ -3,6 +3,7 @@ use futures_util::{pin_mut, FutureExt};
 use hyper_util::{
     rt::{TokioExecutor, TokioIo},
     server::conn::auto::Builder,
+    service::TowerToHyperService,
 };
 use std::{
     future::{Future, IntoFuture},
@@ -128,7 +129,7 @@ where
             match version_buffer[0] {
                 b'G' | b'g' | b'H' | b'h' | b'P' | b'p' | b'D' | b'd' | b'C' | b'c' | b'O'
                 | b'o' | b'T' | b't' => {
-                    let svc = http_proxy.clone();
+                    let hyper_service = TowerToHyperService::new(http_proxy.clone());
 
                     let signal_tx = Arc::clone(&signal_tx);
                     let close_rx = close_rx.clone();
@@ -136,7 +137,7 @@ where
                     tokio::spawn(async move {
                         #[allow(unused_mut)]
                         let mut builder = Builder::new(TokioExecutor::new());
-                        let conn = builder.serve_connection_with_upgrades(io, svc);
+                        let conn = builder.serve_connection_with_upgrades(io, hyper_service);
                         pin_mut!(conn);
 
                         let signal_closed = signal_tx.closed().fuse();

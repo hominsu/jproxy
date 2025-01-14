@@ -1,13 +1,19 @@
 use bytes::Bytes;
 use http::{Method, StatusCode};
 use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
-use hyper::{body::Incoming, service::Service, upgrade::Upgraded, Request, Response};
+use hyper::{body::Incoming, upgrade::Upgraded, Request, Response};
 use hyper_util::{
     client::legacy::Client,
     rt::{TokioExecutor, TokioIo},
 };
-use std::{future::Future, io, pin::Pin};
+use std::{
+    future::Future,
+    io,
+    pin::Pin,
+    task::{Context, Poll},
+};
 use tokio::net::TcpStream;
+use tower_service::Service;
 
 mod error;
 pub use error::Error;
@@ -20,7 +26,11 @@ impl Service<Request<Incoming>> for HttpProxy {
     type Error = Error;
     type Future = Pin<Box<dyn Future<Output = Result<Self::Response, Self::Error>> + Send>>;
 
-    fn call(&self, req: Request<Incoming>) -> Self::Future {
+    fn poll_ready(&mut self, _cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        Poll::Ready(Ok(()))
+    }
+
+    fn call(&mut self, req: Request<Incoming>) -> Self::Future {
         let proxy = self.clone();
 
         Box::pin(async move {

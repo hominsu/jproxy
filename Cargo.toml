@@ -35,6 +35,7 @@ config = { version = "0.15.4", features = ["toml", "json", "yaml", "ini", "ron",
 
 # http
 http = "1"
-hyper = { version = "1.5", features = ["client", "http1", "server"] }
-hyper-util = { version = "0.1", features = ["client-legacy","http1", "server", "tokio"] }
 http-body-util = "0.1.2"
+hyper = { version = "1.5", features = ["client", "http1", "server"] }
+hyper-util = { version = "0.1", features = ["client-legacy","http1", "server", "service", "tokio"] }
+tower-service = { version = "0.3"}

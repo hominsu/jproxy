@@ -1,7 +1,7 @@
 use tokio::signal;
 
 pub mod config;
-mod error;
+pub mod connect;
 pub mod http;
 pub mod serve;
 
