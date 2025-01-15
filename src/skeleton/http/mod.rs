@@ -64,7 +64,7 @@ impl Service<Request<Incoming>> for HttpProxy {
                     let resp = Client::builder(TokioExecutor::new())
                         .http1_preserve_header_case(true)
                         .http1_title_case_headers(true)
-                        .build_http()
+                        .build(super::connect::HttpConnector::new())
                         .request(req)
                         .await?;
 
@@ -76,6 +76,10 @@ impl Service<Request<Incoming>> for HttpProxy {
 }
 
 impl HttpProxy {
+    pub fn new() -> Self {
+        Self {}
+    }
+
     async fn tunnel(&self, upgraded: Upgraded, addr: String) -> io::Result<()> {
         let mut server = TcpStream::connect(addr).await?;
         let mut upgraded = TokioIo::new(upgraded);
