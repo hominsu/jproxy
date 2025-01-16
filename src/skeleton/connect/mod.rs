@@ -1,6 +1,6 @@
 use futures_util::TryFutureExt;
 use http::Uri;
-use hyper_util::rt::TokioIo;
+use hyper_util::{client::legacy::connect::HttpConnector as HyperHttpConnector, rt::TokioIo};
 use std::{
     future::Future,
     io,
@@ -14,13 +14,13 @@ mod error;
 
 #[derive(Clone)]
 pub struct HttpConnector {
-    inner: hyper_util::client::legacy::connect::HttpConnector,
+    inner: HyperHttpConnector,
 }
 
 impl HttpConnector {
     pub fn new() -> Self {
         Self {
-            inner: hyper_util::client::legacy::connect::HttpConnector::new(),
+            inner: HyperHttpConnector::new(),
         }
     }
 }

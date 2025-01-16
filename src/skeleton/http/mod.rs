@@ -1,3 +1,4 @@
+use super::{config::Config, connect::HttpConnector};
 use bytes::Bytes;
 use http::{Method, StatusCode};
 use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
@@ -10,6 +11,7 @@ use std::{
     future::Future,
     io,
     pin::Pin,
+    sync::{Arc, RwLock},
     task::{Context, Poll},
 };
 use tokio::net::TcpStream;
@@ -19,7 +21,9 @@ mod error;
 pub use error::Error;
 
 #[derive(Debug, Clone)]
-pub struct HttpProxy {}
+pub struct HttpProxy {
+    config: Arc<RwLock<Config>>,
+}
 
 impl Service<Request<Incoming>> for HttpProxy {
     type Response = Response<BoxBody<Bytes, hyper::Error>>;
@@ -61,10 +65,12 @@ impl Service<Request<Incoming>> for HttpProxy {
                 }
                 // Handles regular HTTP connections by forwarding the request to the destination
                 _ => {
+                    let connector = HttpConnector::new();
+
                     let resp = Client::builder(TokioExecutor::new())
                         .http1_preserve_header_case(true)
                         .http1_title_case_headers(true)
-                        .build(super::connect::HttpConnector::new())
+                        .build(connector)
                         .request(req)
                         .await?;
 
@@ -76,8 +82,8 @@ impl Service<Request<Incoming>> for HttpProxy {
 }
 
 impl HttpProxy {
-    pub fn new() -> Self {
-        Self {}
+    pub fn new(config: Arc<RwLock<Config>>) -> Self {
+        Self { config }
     }
 
     async fn tunnel(&self, upgraded: Upgraded, addr: String) -> io::Result<()> {

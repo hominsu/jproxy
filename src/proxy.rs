@@ -38,7 +38,7 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
     runtime.block_on(async move {
         let manager_fut = manager.into_future();
 
-        let http_proxy = crate::skeleton::http::HttpProxy::new();
+        let http_proxy = crate::skeleton::http::HttpProxy::new(config);
         let listener = tokio::net::TcpListener::bind(bind).await.unwrap();
 
         tracing::info!("listening on {}", listener.local_addr().unwrap());
