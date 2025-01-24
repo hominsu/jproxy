@@ -22,6 +22,7 @@ use tower_service::Service;
 
 #[derive(Debug, Clone)]
 pub struct HttpProxy {
+    #[allow(dead_code)]
     config: Arc<RwLock<Config>>,
 }
 
@@ -66,7 +67,6 @@ impl Service<Request<Incoming>> for HttpProxy {
                 // Handles regular HTTP connections by forwarding the request to the destination
                 _ => {
                     let connector = HttpConnector::new();
-
                     let resp = Client::builder(TokioExecutor::new())
                         .http1_preserve_header_case(true)
                         .http1_title_case_headers(true)
