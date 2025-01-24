@@ -1,11 +1,12 @@
-use tokio::signal;
-
 pub mod config;
 pub mod connect;
 pub mod http;
 pub mod serve;
 
-pub async fn shutdown_signal() {
+use std::sync::Arc;
+use tokio::{signal, sync::watch::Sender};
+
+pub async fn shutdown_signal(tx: Arc<Sender<()>>) {
     let ctrl_c = async {
         signal::ctrl_c()
             .await
@@ -26,5 +27,6 @@ pub async fn shutdown_signal() {
     tokio::select! {
         _ = ctrl_c => {},
         _ = terminate => {},
+        _ = tx.closed() => {},
     }
 }

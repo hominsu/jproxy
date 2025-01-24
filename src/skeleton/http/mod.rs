@@ -1,3 +1,6 @@
+mod error;
+pub use error::Error;
+
 use super::{config::Config, connect::HttpConnector};
 use bytes::Bytes;
 use http::{Method, StatusCode};
@@ -16,9 +19,6 @@ use std::{
 };
 use tokio::net::TcpStream;
 use tower_service::Service;
-
-mod error;
-pub use error::Error;
 
 #[derive(Debug, Clone)]
 pub struct HttpProxy {

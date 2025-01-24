@@ -1,3 +1,5 @@
+mod error;
+
 use futures_util::TryFutureExt;
 use http::Uri;
 use hyper_util::{client::legacy::connect::HttpConnector as HyperHttpConnector, rt::TokioIo};
@@ -9,8 +11,6 @@ use std::{
 };
 use tokio::net::TcpStream;
 use tower_service::Service;
-
-mod error;
 
 #[derive(Clone)]
 pub struct HttpConnector {

@@ -127,8 +127,14 @@ where
             tracing::trace!("connection {remote_addr:?} accepted");
 
             match version_buffer[0] {
-                b'G' | b'g' | b'H' | b'h' | b'P' | b'p' | b'D' | b'd' | b'C' | b'c' | b'O'
-                | b'o' | b'T' | b't' => {
+                b'G' | b'g' |   // GET
+                b'H' | b'h' |   // HEAD
+                b'P' | b'p' |   // POST
+                b'D' | b'd' |   // DELETE
+                b'C' | b'c' |   // CONNECT
+                b'O' | b'o' |   // OPTIONS
+                b'T' | b't'     // TRACE
+                => {
                     let hyper_service = TowerToHyperService::new(http_proxy.clone());
 
                     let signal_tx = Arc::clone(&signal_tx);
