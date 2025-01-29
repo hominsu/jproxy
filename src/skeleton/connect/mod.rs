@@ -1,14 +1,14 @@
+mod dns;
 mod error;
+
+use std::future::Future;
+use std::io;
+use std::pin::Pin;
+use std::task::{Context, Poll};
 
 use futures_util::TryFutureExt;
 use http::Uri;
 use hyper_util::{client::legacy::connect::HttpConnector as HyperHttpConnector, rt::TokioIo};
-use std::{
-    future::Future,
-    io,
-    pin::Pin,
-    task::{Context, Poll},
-};
 use tokio::net::TcpStream;
 use tower_service::Service;
 
