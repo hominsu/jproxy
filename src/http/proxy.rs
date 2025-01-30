@@ -62,7 +62,13 @@ impl Service<Request<Incoming>> for HttpProxy {
                 }
                 // Handles regular HTTP connections by forwarding the request to the destination
                 _ => {
-                    let connector = TcpConnector::new();
+                    let Config {
+                        connect_timeout, ..
+                    } = proxy.config.read().unwrap().clone();
+
+                    let mut connector = TcpConnector::new();
+                    connector.set_connect_timeout(connect_timeout);
+
                     let resp = Client::builder(TokioExecutor::new())
                         .http1_preserve_header_case(true)
                         .http1_title_case_headers(true)

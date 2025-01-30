@@ -58,6 +58,19 @@ where
     }
 
     #[inline]
+    #[allow(dead_code)]
+    pub fn set_connect_timeout(&mut self, dur: Option<Duration>) {
+        self.config_mut().connect_timeout = dur;
+    }
+
+    #[inline]
+    #[allow(dead_code)]
+    pub fn set_happy_eyeballs_timeout(&mut self, dur: Option<Duration>) {
+        self.config_mut().happy_eyeballs_timeout = dur;
+    }
+
+    #[inline]
+    #[allow(dead_code)]
     pub fn set_local_address(&mut self, addr: Option<IpAddr>) {
         let (v4, v6) = match addr {
             Some(IpAddr::V4(a)) => (Some(a), None),
@@ -72,6 +85,7 @@ where
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub fn set_local_addresses(&mut self, addr_ipv4: Ipv4Addr, addr_ipv6: Ipv6Addr) {
         let cfg = self.config_mut();
 
@@ -80,6 +94,7 @@ where
     }
 
     #[inline]
+    #[allow(dead_code)]
     pub fn set_nodelay(&mut self, nodelay: bool) {
         self.config_mut().nodelay = nodelay;
     }
