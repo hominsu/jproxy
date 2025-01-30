@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.1.1 (2025-01-30)
+
+### New Features
+
+ - <csr-id-ad0fc28f61daa6f49ec638da396c4323de73ee4a/> add tcp connector
+ - <csr-id-1053cb389e27e08d97f7aa7b59da9bddd7a769f0/> add dns resolver
+
+### Refactor
+
+ - <csr-id-f1ddaecbfdecf9730e250f0381e2fc43479bb081/> set connection timeout
+ - <csr-id-bee1387c7371dfca12600a151f0ef73b48fa670f/> restructure the code
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 4 commits contributed to the release over the course of 1 calendar day.
+ - 6 days passed between releases.
+ - 4 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Set connection timeout ([`f1ddaec`](https://github.com/hominsu/jproxy/commit/f1ddaecbfdecf9730e250f0381e2fc43479bb081))
+    - Restructure the code ([`bee1387`](https://github.com/hominsu/jproxy/commit/bee1387c7371dfca12600a151f0ef73b48fa670f))
+    - Add tcp connector ([`ad0fc28`](https://github.com/hominsu/jproxy/commit/ad0fc28f61daa6f49ec638da396c4323de73ee4a))
+    - Add dns resolver ([`1053cb3`](https://github.com/hominsu/jproxy/commit/1053cb389e27e08d97f7aa7b59da9bddd7a769f0))
+</details>
+
 ## v0.1.0 (2025-01-24)
 
 <csr-id-720bc8415b477b85dd5d39279fb0f94695b71a29/>
@@ -36,7 +70,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
  - <csr-id-ba49e5a19aafcdd8be50c024653fb738b0081cd5/> add Connector
  - <csr-id-2aafc2c1e89f5c5885c9519178f947e644c5217d/> implement HTTP proxy server functionality
    - Implement an HTTP proxy with `CONNECT` method support
-- Add a serve module that handles incoming connections, and graceful shutdowns
 
 ### Other
 
@@ -66,7 +99,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-read-only-do-not-edit/>
 
- - 16 commits contributed to the release over the course of 13 calendar days.
+ - 17 commits contributed to the release over the course of 14 calendar days.
  - 16 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -77,6 +110,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release jproxy v0.1.0 ([`4ddef84`](https://github.com/hominsu/jproxy/commit/4ddef84a0f21e2a31e16344fa76fe335da553dc6))
     - Add README.md and update Cargo.toml ([`720bc84`](https://github.com/hominsu/jproxy/commit/720bc8415b477b85dd5d39279fb0f94695b71a29))
     - Update LICENSE ([`1ee1f2a`](https://github.com/hominsu/jproxy/commit/1ee1f2a1b6a0c144e58610ad23bfa7419bf41d12))
     - Graceful shutdown ([`6e42dc5`](https://github.com/hominsu/jproxy/commit/6e42dc58e23e910869d80ebe5fa0b163a2dd7da4))
@@ -96,5 +130,5 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 </details>
 
 <csr-unknown>
- implement basic HTTP proxy functionality initial commit<csr-unknown/>
+Add a serve module that handles incoming connections, and graceful shutdowns<csr-unknown/>
 
