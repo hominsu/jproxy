@@ -1,13 +1,39 @@
-use crate::skeleton::{
-    config::{manager, Config},
-    http::HttpProxy,
-    serve::serve,
-    shutdown_signal,
-};
-use crate::Bootstrap;
-use std::{future::IntoFuture, sync::Arc};
+use std::future::IntoFuture;
+use std::sync::Arc;
+
 use tokio::sync::watch;
+use tokio::{signal, sync::watch::Sender};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
+
+use crate::config::{manager, Config};
+use crate::http::HttpProxy;
+use crate::serve::serve;
+use crate::Bootstrap;
+
+pub async fn shutdown_signal(tx: Arc<Sender<()>>) {
+    let ctrl_c = async {
+        signal::ctrl_c()
+            .await
+            .expect("failed to install Ctrl+C handler");
+    };
+
+    #[cfg(unix)]
+    let terminate = async {
+        signal::unix::signal(signal::unix::SignalKind::terminate())
+            .expect("failed to install signal handler")
+            .recv()
+            .await;
+    };
+
+    #[cfg(not(unix))]
+    let terminate = std::future::pending::<()>();
+
+    tokio::select! {
+        _ = ctrl_c => {},
+        _ = terminate => {},
+        _ = tx.closed() => {},
+    }
+}
 
 pub fn run(args: Bootstrap) -> crate::Result<()> {
     let manager = manager(args.conf.as_str());

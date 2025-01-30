@@ -1,6 +1,9 @@
+mod config;
+mod connect;
 mod error;
+mod http;
 mod proxy;
-mod skeleton;
+mod serve;
 
 use clap::{Args, Parser, Subcommand};
 

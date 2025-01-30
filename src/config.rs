@@ -1,16 +1,15 @@
+use std::future::{Future, IntoFuture};
+use std::io;
+use std::net::IpAddr;
+use std::path::Path;
+use std::sync::{mpsc, Arc, RwLock};
+use std::time::Duration;
+
 use config::{ConfigError, File};
 use glob::glob;
 use ipnet::IpNet;
 use notify::{Event, RecommendedWatcher, RecursiveMode, Watcher};
 use serde::Deserialize;
-use std::{
-    future::{Future, IntoFuture},
-    io,
-    net::IpAddr,
-    path::Path,
-    sync::{mpsc, Arc, RwLock},
-    time::Duration,
-};
 
 #[derive(Clone, Debug, Deserialize)]
 #[serde(default)]

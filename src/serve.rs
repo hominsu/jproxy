@@ -1,21 +1,17 @@
-use super::http::HttpProxy;
+use std::future::{Future, IntoFuture};
+use std::io;
+use std::net::SocketAddr;
+use std::sync::Arc;
+use std::time::Duration;
+
 use futures_util::{pin_mut, FutureExt};
-use hyper_util::{
-    rt::{TokioExecutor, TokioIo},
-    server::conn::auto::Builder,
-    service::TowerToHyperService,
-};
-use std::{
-    future::{Future, IntoFuture},
-    io,
-    net::SocketAddr,
-    sync::Arc,
-    time::Duration,
-};
-use tokio::{
-    net::{TcpListener, TcpStream},
-    sync::watch,
-};
+use hyper_util::rt::{TokioExecutor, TokioIo};
+use hyper_util::server::conn::auto::Builder;
+use hyper_util::service::TowerToHyperService;
+use tokio::net::{TcpListener, TcpStream};
+use tokio::sync::watch;
+
+use crate::http::HttpProxy;
 
 pub fn serve(tcp_listener: TcpListener, http_proxy: HttpProxy) -> Serve {
     Serve {

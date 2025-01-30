@@ -1,24 +1,20 @@
-mod error;
-pub use error::Error;
+use std::future::Future;
+use std::io;
+use std::pin::Pin;
+use std::sync::{Arc, RwLock};
+use std::task::{Context, Poll};
 
-use super::{config::Config, connect::tcp::TcpConnector};
 use bytes::Bytes;
 use http::{Method, StatusCode};
 use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
 use hyper::{body::Incoming, upgrade::Upgraded, Request, Response};
-use hyper_util::{
-    client::legacy::Client,
-    rt::{TokioExecutor, TokioIo},
-};
-use std::{
-    future::Future,
-    io,
-    pin::Pin,
-    sync::{Arc, RwLock},
-    task::{Context, Poll},
-};
+use hyper_util::client::legacy::Client;
+use hyper_util::rt::{TokioExecutor, TokioIo};
 use tokio::net::TcpStream;
 use tower_service::Service;
+
+use super::error::Error;
+use crate::{config::Config, connect::tcp::TcpConnector};
 
 #[derive(Debug, Clone)]
 pub struct HttpProxy {
