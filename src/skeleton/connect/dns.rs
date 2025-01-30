@@ -195,12 +195,12 @@ impl fmt::Debug for Resolver {
     }
 }
 
-struct ResolverFuture(JoinHandle<Result<SocketAddrs, io::Error>>);
+pub struct ResolverFuture(JoinHandle<Result<SocketAddrs, io::Error>>);
 
 impl Future for ResolverFuture {
     type Output = Result<Addrs, io::Error>;
 
-    fn poll(self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
+    fn poll(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Self::Output> {
         Pin::new(&mut self.0).poll(cx).map(|res| match res {
             Ok(Ok(addrs)) => Ok(Addrs { inner: addrs }),
             Ok(Err(e)) => Err(e),
@@ -225,4 +225,40 @@ impl Drop for ResolverFuture {
     fn drop(&mut self) {
         self.0.abort();
     }
+}
+
+pub trait Resolve {
+    type Addrs: Iterator<Item = SocketAddr>;
+    type Error: Into<Box<dyn Error + Send + Sync>>;
+    type Future: Future<Output = Result<Self::Addrs, Self::Error>>;
+
+    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>>;
+    fn resolve(&mut self, name: Name) -> Self::Future;
+}
+
+impl<S> Resolve for S
+where
+    S: Service<Name>,
+    S::Response: Iterator<Item = SocketAddr>,
+    S::Error: Into<Box<dyn Error + Send + Sync>>,
+{
+    type Addrs = S::Response;
+    type Error = S::Error;
+    type Future = S::Future;
+
+    fn poll_ready(&mut self, cx: &mut Context<'_>) -> Poll<Result<(), Self::Error>> {
+        Service::poll_ready(self, cx)
+    }
+
+    fn resolve(&mut self, name: Name) -> Self::Future {
+        Service::call(self, name)
+    }
+}
+
+pub async fn resolve<R>(resolver: &mut R, name: Name) -> Result<R::Addrs, R::Error>
+where
+    R: Resolve,
+{
+    futures_util::future::poll_fn(|cx| resolver.poll_ready(cx)).await?;
+    resolver.resolve(name).await
 }

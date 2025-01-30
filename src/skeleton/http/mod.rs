@@ -1,7 +1,7 @@
 mod error;
 pub use error::Error;
 
-use super::{config::Config, connect::HttpConnector};
+use super::{config::Config, connect::tcp::TcpConnector};
 use bytes::Bytes;
 use http::{Method, StatusCode};
 use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
@@ -66,7 +66,7 @@ impl Service<Request<Incoming>> for HttpProxy {
                 }
                 // Handles regular HTTP connections by forwarding the request to the destination
                 _ => {
-                    let connector = HttpConnector::new();
+                    let connector = TcpConnector::new();
                     let resp = Client::builder(TokioExecutor::new())
                         .http1_preserve_header_case(true)
                         .http1_title_case_headers(true)
