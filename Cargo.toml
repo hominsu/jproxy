@@ -28,22 +28,22 @@ serde = { version = "1", features = ["derive"] }
 tokio = { version = "1", features = ["io-util", "macros", "net", "rt-multi-thread", "signal"] }
 
 # tracing
-tracing = "0.1.41"
-tracing-subscriber = { version = "0.3.19", features = ["env-filter"] }
+tracing = "0.1"
+tracing-subscriber = { version = "0.3", features = ["env-filter"] }
 
 # cli
 clap = { version = "4.5", features = ["derive", "env"] }
 
 # hot reload config
-glob = { version = "0.3.2" }
+glob = { version = "0.3" }
 notify = { version = "8.0.0" }
-config = { version = "0.15.4", features = ["toml", "json", "yaml", "ini", "ron", "json5"] }
+config = { version = "0.15", features = ["toml", "json", "yaml", "ini", "ron", "json5"] }
 
 # http
 http = "1"
-http-body-util = "0.1.2"
-hyper = { version = "1.5", features = ["client", "http1", "server"] }
+http-body-util = "0.1"
+hyper = { version = "1.6", features = ["client", "http1", "server"] }
 hyper-util = { version = "0.1", features = ["client-legacy", "http1", "server", "service", "tokio"] }
 tower-service = { version = "0.3" }
 
-ipnet = { version = "2.10", features = ["serde"] }
+ipnet = { version = "2.11", features = ["serde"] }

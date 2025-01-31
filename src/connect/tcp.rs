@@ -125,6 +125,7 @@ where
             let config = &self_.config;
 
             let (host, port) = get_host_port(&dst)?;
+            let host = host.trim_start_matches('[').trim_end_matches(']');
 
             let addrs = if let Some(addrs) = dns::SocketAddrs::try_parse(host, port) {
                 addrs
@@ -304,7 +305,7 @@ fn connect(
                     SocketAddr::V4(_) => ([0, 0, 0, 0], 0).into(),
                     SocketAddr::V6(_) => ([0, 0, 0, 0, 0, 0, 0, 0], 0).into(),
                 };
-                socket.bind(any.into()).map_err(TcpError)?;
+                socket.bind(any).map_err(TcpError)?;
             }
         }
     }
@@ -330,13 +331,6 @@ fn get_host_port(dst: &Uri) -> Result<(&str, u16), InvalidUriError> {
         dst.host(),
         dst.port(),
     );
-
-    if dst.scheme().is_none() {
-        return Err(InvalidUriError::from(io::Error::new(
-            io::ErrorKind::InvalidInput,
-            "scheme is missing",
-        )));
-    }
 
     let host = match dst.host() {
         Some(s) => s,

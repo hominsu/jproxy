@@ -1,11 +1,10 @@
 use std::future::Future;
-use std::io;
 use std::pin::Pin;
 use std::sync::{Arc, RwLock};
 use std::task::{Context, Poll};
 
 use bytes::Bytes;
-use http::{Method, StatusCode};
+use http::{Method, StatusCode, Uri};
 use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
 use hyper::{body::Incoming, upgrade::Upgraded, Request, Response};
 use hyper_util::client::legacy::Client;
@@ -38,46 +37,8 @@ impl Service<Request<Incoming>> for HttpProxy {
             tracing::info!("{req:?}");
             match *req.method() {
                 // Handles HTTPS connections by establishing a tunnel via the CONNECT method
-                Method::CONNECT => {
-                    if let Some(addr) = host_addr(req.uri()) {
-                        tokio::task::spawn(async move {
-                            match hyper::upgrade::on(req).await {
-                                Ok(upgraded) => {
-                                    if let Err(e) = proxy.tunnel(upgraded, addr).await {
-                                        tracing::warn!("server io error: {}", e);
-                                    }
-                                }
-                                Err(e) => tracing::warn!("upgrade error: {}", e),
-                            }
-                        });
-
-                        Ok(Response::new(empty()))
-                    } else {
-                        tracing::warn!("CONNECT host is not socket addr: {:?}", req.uri());
-                        let mut resp = Response::new(full("CONNECT must be to a socket address"));
-                        *resp.status_mut() = StatusCode::BAD_REQUEST;
-
-                        Ok(resp)
-                    }
-                }
-                // Handles regular HTTP connections by forwarding the request to the destination
-                _ => {
-                    let Config {
-                        connect_timeout, ..
-                    } = proxy.config.read().unwrap().clone();
-
-                    let mut connector = TcpConnector::new();
-                    connector.set_connect_timeout(connect_timeout);
-
-                    let resp = Client::builder(TokioExecutor::new())
-                        .http1_preserve_header_case(true)
-                        .http1_title_case_headers(true)
-                        .build(connector)
-                        .request(req)
-                        .await?;
-
-                    Ok(resp.map(|b| b.boxed()))
-                }
+                Method::CONNECT => proxy.connect(req).await,
+                _ => proxy.http(req).await,
             }
         })
     }
@@ -88,12 +49,81 @@ impl HttpProxy {
         Self { config }
     }
 
-    async fn tunnel(&self, upgraded: Upgraded, addr: String) -> io::Result<()> {
-        let mut server = TcpStream::connect(addr).await?;
-        let mut upgraded = TokioIo::new(upgraded);
+    async fn http(
+        self,
+        req: Request<Incoming>,
+    ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, Error> {
+        // Handles regular HTTP connections by forwarding the request to the destination
 
+        let Config {
+            connect_timeout, ..
+        } = self.config.read().unwrap().clone();
+
+        let mut connector = TcpConnector::new();
+        connector.set_connect_timeout(connect_timeout);
+
+        let resp = Client::builder(TokioExecutor::new())
+            .http1_preserve_header_case(true)
+            .http1_title_case_headers(true)
+            .build(connector)
+            .request(req)
+            .await?;
+
+        Ok(resp.map(|b| b.boxed()))
+    }
+
+    async fn connect(
+        self,
+        req: Request<Incoming>,
+    ) -> Result<Response<BoxBody<Bytes, hyper::Error>>, Error> {
+        let uri = req.uri().clone();
+
+        if host_addr(&uri).is_none() {
+            tracing::warn!("CONNECT host is not socket addr: {}", uri);
+            let mut resp = Response::new(full("CONNECT must be to a socket address"));
+            *resp.status_mut() = StatusCode::BAD_REQUEST;
+
+            return Ok(resp);
+        }
+
+        tokio::task::spawn(async move {
+            match hyper::upgrade::on(req).await {
+                Ok(upgraded) => {
+                    if let Err(e) = self.establish_tunnel(upgraded, uri).await {
+                        tracing::warn!("tunnel error: {}", e);
+                    }
+                }
+                Err(e) => tracing::warn!("upgrade error: {}", e),
+            }
+        });
+
+        // Immediately return a 200 that the tunnel is established
+        Ok(Response::new(empty()))
+    }
+
+    async fn establish_tunnel(&self, upgraded: Upgraded, uri: Uri) -> Result<(), Error> {
+        let Config {
+            connect_timeout, ..
+        } = self.config.read().unwrap().clone();
+
+        let mut connector = TcpConnector::new();
+        connector.set_connect_timeout(connect_timeout);
+
+        futures_util::future::poll_fn(|cx| connector.poll_ready(cx)).await?;
+
+        let server = connector.call(uri).await?.into_inner();
+
+        self.tunnel(TokioIo::new(upgraded), server).await
+    }
+
+    async fn tunnel(
+        &self,
+        mut upgraded: TokioIo<Upgraded>,
+        mut server: TcpStream,
+    ) -> Result<(), Error> {
         let (from_client, from_server) =
             tokio::io::copy_bidirectional(&mut upgraded, &mut server).await?;
+
         tracing::trace!(
             "client wrote {} bytes and received {} bytes",
             from_client,
@@ -104,7 +134,7 @@ impl HttpProxy {
     }
 }
 
-fn host_addr(uri: &http::Uri) -> Option<String> {
+fn host_addr(uri: &Uri) -> Option<String> {
     uri.authority().map(|auth| auth.to_string())
 }
 

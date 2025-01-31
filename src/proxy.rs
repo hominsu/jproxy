@@ -51,7 +51,7 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
                 format!(
                     "{}={}",
                     env!("CARGO_CRATE_NAME"),
-                    if debug { "debug" } else { "info" }
+                    if debug { "trace" } else { "info" }
                 )
                 .into()
             }),
