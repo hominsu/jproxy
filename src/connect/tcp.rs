@@ -102,19 +102,16 @@ where
     }
 
     pub fn assign_local_address_from_cidr(&mut self, cidr: Option<IpNet>) {
-        match cidr {
-            Some(cidr) => {
-                let mut rng = rand::rng();
+        if let Some(cidr) = cidr {
+            let mut rng = rand::rng();
 
-                let addr = cidr
-                    .hosts()
-                    .collect::<Vec<IpAddr>>()
-                    .choose(&mut rng)
-                    .cloned();
+            let addr = cidr
+                .hosts()
+                .collect::<Vec<IpAddr>>()
+                .choose(&mut rng)
+                .cloned();
 
-                self.set_local_address(addr)
-            }
-            _ => {}
+            self.set_local_address(addr)
         }
     }
 
