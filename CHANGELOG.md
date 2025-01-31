@@ -5,7 +5,42 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.1.3 (2025-01-31)
+
+### Bug Fixes
+
+ - <csr-id-b520d30cfbd06781a8e0b76f1d6c364d800504ab/> lint
+
+### Refactor
+
+ - <csr-id-8c1242c822def63bf633e0876bd516f5f9158811/> network bindings to use local CIDR range
+   - Remove unused `cidr_range` field from `Config` struct
+   - Filter out empty `SocketAddrs`
+   - Add a function to assign a local address from a CIDR range to `TcpConnector`
+   - Use the new function in `HttpProxy` to assign a local address from the configured CIDR range
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 2 commits contributed to the release.
+ - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Lint ([`b520d30`](https://github.com/hominsu/jproxy/commit/b520d30cfbd06781a8e0b76f1d6c364d800504ab))
+    - Network bindings to use local CIDR range ([`8c1242c`](https://github.com/hominsu/jproxy/commit/8c1242c822def63bf633e0876bd516f5f9158811))
+</details>
+
 ## v0.1.2 (2025-01-31)
+
+<csr-id-159e82b42e65ce6812b05251c4bf878dbeecf973/>
 
 ### Refactor
 
@@ -18,7 +53,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-read-only-do-not-edit/>
 
- - 1 commit contributed to the release.
+ - 2 commits contributed to the release.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -29,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release jproxy v0.1.2 ([`25accff`](https://github.com/hominsu/jproxy/commit/25accff916a2bacb76859f8927afc67d7e70a48c))
     - HTTP proxy ([`159e82b`](https://github.com/hominsu/jproxy/commit/159e82b42e65ce6812b05251c4bf878dbeecf973))
 </details>
 
