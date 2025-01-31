@@ -35,8 +35,6 @@ pub struct Config {
 
     pub cidr: Option<IpNet>,
 
-    pub cidr_range: Option<u8>,
-
     pub fallback: Option<IpAddr>,
 }
 
@@ -48,7 +46,6 @@ impl Default for Config {
             concurrent: 1024,
             connect_timeout: Some(Duration::from_secs(10)),
             cidr: None,
-            cidr_range: None,
             fallback: None,
         }
     }

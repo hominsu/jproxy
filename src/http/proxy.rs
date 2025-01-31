@@ -56,11 +56,14 @@ impl HttpProxy {
         // Handles regular HTTP connections by forwarding the request to the destination
 
         let Config {
-            connect_timeout, ..
+            connect_timeout,
+            cidr,
+            ..
         } = self.config.read().unwrap().clone();
 
         let mut connector = TcpConnector::new();
         connector.set_connect_timeout(connect_timeout);
+        connector.assign_local_address_from_cidr(cidr);
 
         let resp = Client::builder(TokioExecutor::new())
             .http1_preserve_header_case(true)
@@ -103,11 +106,14 @@ impl HttpProxy {
 
     async fn establish_tunnel(&self, upgraded: Upgraded, uri: Uri) -> Result<(), Error> {
         let Config {
-            connect_timeout, ..
+            connect_timeout,
+            cidr,
+            ..
         } = self.config.read().unwrap().clone();
 
         let mut connector = TcpConnector::new();
         connector.set_connect_timeout(connect_timeout);
+        connector.assign_local_address_from_cidr(cidr);
 
         futures_util::future::poll_fn(|cx| connector.poll_ready(cx)).await?;
 

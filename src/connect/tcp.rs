@@ -9,6 +9,8 @@ use std::time::Duration;
 use futures_util::future::Either;
 use http::uri::{Scheme, Uri};
 use hyper_util::rt::TokioIo;
+use ipnet::IpNet;
+use rand::prelude::IndexedRandom;
 use tokio::net::{TcpSocket, TcpStream};
 use tokio::time::Sleep;
 use tower_service::Service;
@@ -97,6 +99,23 @@ where
     #[allow(dead_code)]
     pub fn set_nodelay(&mut self, nodelay: bool) {
         self.config_mut().nodelay = nodelay;
+    }
+
+    pub fn assign_local_address_from_cidr(&mut self, cidr: Option<IpNet>) {
+        match cidr {
+            Some(cidr) => {
+                let mut rng = rand::rng();
+
+                let addr = cidr
+                    .hosts()
+                    .collect::<Vec<IpAddr>>()
+                    .choose(&mut rng)
+                    .cloned();
+
+                self.set_local_address(addr)
+            }
+            _ => {}
+        }
     }
 
     fn config_mut(&mut self) -> &mut Config {
