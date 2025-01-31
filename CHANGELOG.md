@@ -5,7 +5,37 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.1.2 (2025-01-31)
+
+### Refactor
+
+ - <csr-id-159e82b42e65ce6812b05251c4bf878dbeecf973/> HTTP proxy
+   - Remove square brackets from the host address in `tcp.rs`.
+   - Refactor `HttpProxy` to use separate functions for `CONNECT` and other requests.
+   - Change default log level from `info` to `trace` when in debug mode.
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 1 commit contributed to the release.
+ - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - HTTP proxy ([`159e82b`](https://github.com/hominsu/jproxy/commit/159e82b42e65ce6812b05251c4bf878dbeecf973))
+</details>
+
 ## v0.1.1 (2025-01-30)
+
+<csr-id-f1ddaecbfdecf9730e250f0381e2fc43479bb081/>
+<csr-id-bee1387c7371dfca12600a151f0ef73b48fa670f/>
 
 ### New Features
 
@@ -21,7 +51,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-read-only-do-not-edit/>
 
- - 4 commits contributed to the release over the course of 1 calendar day.
+ - 5 commits contributed to the release over the course of 1 calendar day.
  - 6 days passed between releases.
  - 4 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -33,6 +63,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release jproxy v0.1.1 ([`f657dd6`](https://github.com/hominsu/jproxy/commit/f657dd6e3b6a33a72679f895da73679ffd930f35))
     - Set connection timeout ([`f1ddaec`](https://github.com/hominsu/jproxy/commit/f1ddaecbfdecf9730e250f0381e2fc43479bb081))
     - Restructure the code ([`bee1387`](https://github.com/hominsu/jproxy/commit/bee1387c7371dfca12600a151f0ef73b48fa670f))
     - Add tcp connector ([`ad0fc28`](https://github.com/hominsu/jproxy/commit/ad0fc28f61daa6f49ec638da396c4323de73ee4a))
@@ -128,7 +159,4 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Rename ([`584e02f`](https://github.com/hominsu/jproxy/commit/584e02f5605e2abc1fa6fc6b471aaf2e32bc9184))
     - Initial commit ([`84b545f`](https://github.com/hominsu/jproxy/commit/84b545fe1b89e9a7c3e8dd396ad6ff402616d672))
 </details>
-
-<csr-unknown>
-Add a serve module that handles incoming connections, and graceful shutdowns<csr-unknown/>
 
