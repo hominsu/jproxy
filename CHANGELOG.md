@@ -5,7 +5,44 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.1.4 (2025-02-02)
+
+### Bug Fixes
+
+ - <csr-id-f3c77222cd53496c1a410a7870c0e07f49b4aebf/> CIDR IP address generation
+   - Implement a more efficient way of picking a random IP within a CIDR.
+   - Fix capacity overflow issue
+
+### Refactor
+
+ - <csr-id-b6df33f305b82b661ad7288d344f89d8998ed390/> server socket configuration
+   - Change the `bind` config from a String to a SocketAddr
+   - Change the `concurrent` config from usize to u32
+   - Parse the bind address directly in the config default
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 2 commits contributed to the release.
+ - 2 days passed between releases.
+ - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - CIDR IP address generation ([`f3c7722`](https://github.com/hominsu/jproxy/commit/f3c77222cd53496c1a410a7870c0e07f49b4aebf))
+    - Server socket configuration ([`b6df33f`](https://github.com/hominsu/jproxy/commit/b6df33f305b82b661ad7288d344f89d8998ed390))
+</details>
+
 ## v0.1.3 (2025-01-31)
+
+<csr-id-8c1242c822def63bf633e0876bd516f5f9158811/>
 
 ### Bug Fixes
 
@@ -23,7 +60,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-read-only-do-not-edit/>
 
- - 2 commits contributed to the release.
+ - 3 commits contributed to the release.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -34,6 +71,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release jproxy v0.1.3 ([`e560891`](https://github.com/hominsu/jproxy/commit/e5608914f0c48454de874174167dd7de60cfcf3c))
     - Lint ([`b520d30`](https://github.com/hominsu/jproxy/commit/b520d30cfbd06781a8e0b76f1d6c364d800504ab))
     - Network bindings to use local CIDR range ([`8c1242c`](https://github.com/hominsu/jproxy/commit/8c1242c822def63bf633e0876bd516f5f9158811))
 </details>
