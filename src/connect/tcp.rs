@@ -10,7 +10,7 @@ use futures_util::future::Either;
 use http::uri::{Scheme, Uri};
 use hyper_util::rt::TokioIo;
 use ipnet::IpNet;
-use rand::prelude::IndexedRandom;
+use rand::Rng;
 use tokio::net::{TcpSocket, TcpStream};
 use tokio::time::Sleep;
 use tower_service::Service;
@@ -105,13 +105,36 @@ where
         if let Some(cidr) = cidr {
             let mut rng = rand::rng();
 
-            let addr = cidr
-                .hosts()
-                .collect::<Vec<IpAddr>>()
-                .choose(&mut rng)
-                .cloned();
+            let addr = match cidr {
+                IpNet::V4(net) => {
+                    let prefix_len = net.prefix_len();
+                    let host_len = 32u8 - prefix_len;
 
-            self.set_local_address(addr)
+                    let network_bits = net.network().to_bits();
+                    let rand_host_bits = if prefix_len < 31 {
+                        // exclude network address and broadcast address
+                        1 + rng.random_range(0..(1u32 << host_len) - 2)
+                    } else {
+                        // no need to exclude
+                        rng.random_range(0..(1u32 << host_len))
+                    };
+
+                    IpAddr::V4(Ipv4Addr::from_bits(network_bits | rand_host_bits))
+                }
+                IpNet::V6(net) => {
+                    let prefix_len = net.prefix_len();
+                    let host_len = 128u8 - prefix_len;
+
+                    let network_bits = net.network().to_bits();
+                    let rand_host_bits = rng.random_range(0..(1u128 << host_len));
+
+                    IpAddr::V6(Ipv6Addr::from_bits(network_bits | rand_host_bits))
+                }
+            };
+
+            println!("Assigning local address: {:?}", addr);
+
+            self.set_local_address(Some(addr))
         }
     }
 
