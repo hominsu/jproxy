@@ -5,13 +5,41 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v0.1.5 (2025-02-03)
+
+### New Features
+
+ - <csr-id-328e00d45dd7b22e14196bbef8d89d8a1a12c27c/> implement configurable memory allocators
+   - Add feature flags for memory allocators, and set a global allocator based on feature flags.
+   - Add support for mimalloc, rpmalloc, snmalloc, and tikv-jemallocator.
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 1 commit contributed to the release.
+ - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Implement configurable memory allocators ([`328e00d`](https://github.com/hominsu/jproxy/commit/328e00d45dd7b22e14196bbef8d89d8a1a12c27c))
+</details>
+
 ## v0.1.4 (2025-02-02)
+
+<csr-id-b6df33f305b82b661ad7288d344f89d8998ed390/>
 
 ### Bug Fixes
 
  - <csr-id-f3c77222cd53496c1a410a7870c0e07f49b4aebf/> CIDR IP address generation
    - Implement a more efficient way of picking a random IP within a CIDR.
-   - Fix capacity overflow issue
+- Fix capacity overflow issue
 
 ### Refactor
 
@@ -24,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-read-only-do-not-edit/>
 
- - 2 commits contributed to the release.
+ - 3 commits contributed to the release.
  - 2 days passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -36,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release jproxy v0.1.4 ([`a01bdba`](https://github.com/hominsu/jproxy/commit/a01bdba0eff3509d52681ca08d24382d82d1e390))
     - CIDR IP address generation ([`f3c7722`](https://github.com/hominsu/jproxy/commit/f3c77222cd53496c1a410a7870c0e07f49b4aebf))
     - Server socket configuration ([`b6df33f`](https://github.com/hominsu/jproxy/commit/b6df33f305b82b661ad7288d344f89d8998ed390))
 </details>
