@@ -20,13 +20,28 @@ lto = true
 codegen-units = 1
 panic = "abort"
 
+[features]
+default = ["mimalloc"]
+mimalloc = ["dep:mimalloc"]
+rpmalloc = ["dep:rpmalloc"]
+snmalloc = ["dep:snmalloc-rs"]
+tikv-jemallocator = ["dep:tikv-jemallocator"]
+
 [dependencies]
 rand = "0.9"
 bytes = "1"
 thiserror = "2"
-futures-util = "0.3"
 serde = { version = "1", features = ["derive"] }
+
+# async
+futures-util = "0.3"
 tokio = { version = "1", features = ["io-util", "macros", "net", "rt-multi-thread", "signal"] }
+
+# memory allocator
+mimalloc = { version = "0.1", optional = true }
+rpmalloc = { version = "0.2", optional = true }
+snmalloc-rs = { version = "0.3", optional = true }
+tikv-jemallocator = { version = "0.6", optional = true }
 
 # tracing
 tracing = "0.1"

@@ -7,6 +7,22 @@ mod serve;
 
 use clap::{Args, Parser, Subcommand};
 
+#[cfg(feature = "mimalloc")]
+#[global_allocator]
+static GLOBAL: mimalloc::MiMalloc = mimalloc::MiMalloc;
+
+#[cfg(feature = "rpmalloc")]
+#[global_allocator]
+static GLOBAL: rpmalloc::RpMalloc = rpmalloc::RpMalloc;
+
+#[cfg(feature = "snmalloc")]
+#[global_allocator]
+static GLOBAL: snmalloc_rs::SnMalloc = snmalloc_rs::SnMalloc;
+
+#[cfg(feature = "tikv-jemallocator")]
+#[global_allocator]
+static GLOBAL: tikv_jemallocator::Jemalloc = tikv_jemallocator::Jemalloc;
+
 type Result<T, E = error::Error> = std::result::Result<T, E>;
 
 #[derive(Parser)]
