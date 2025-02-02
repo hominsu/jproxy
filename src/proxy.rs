@@ -1,4 +1,5 @@
 use std::future::IntoFuture;
+use std::net::SocketAddr;
 use std::sync::Arc;
 
 use tokio::sync::watch;
@@ -61,14 +62,22 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
 
     let runtime = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
-        .max_blocking_threads(concurrent)
         .build()?;
 
     runtime.block_on(async move {
         let http_proxy = HttpProxy::new(config);
-        let listener = tokio::net::TcpListener::bind(bind).await.unwrap();
 
-        tracing::info!("listening on {}", listener.local_addr().unwrap());
+        let socket = match bind {
+            SocketAddr::V4(_) => tokio::net::TcpSocket::new_v4()?,
+            SocketAddr::V6(_) => tokio::net::TcpSocket::new_v6()?,
+        };
+
+        socket.set_reuseaddr(true)?;
+        socket.bind(bind)?;
+
+        let listener = socket.listen(concurrent)?;
+
+        tracing::info!("listening on {}", listener.local_addr()?);
 
         let (tx, rx) = watch::channel(());
         let tx = Arc::new(tx);
@@ -93,7 +102,9 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
                 let _ = &mut serve_fut.await;
             },
         }
-    });
+
+        Ok::<(), crate::error::Error>(())
+    })?;
 
     Ok(())
 }

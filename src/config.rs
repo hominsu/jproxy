@@ -1,6 +1,6 @@
 use std::future::{Future, IntoFuture};
 use std::io;
-use std::net::IpAddr;
+use std::net::{IpAddr, SocketAddr};
 use std::path::Path;
 use std::sync::{mpsc, Arc, RwLock};
 use std::time::Duration;
@@ -24,12 +24,12 @@ pub struct Config {
     /// This should be in the format of `address:port`. e.g.
     /// - `127.0.0.1:3000` binds to localhost on port 3000.
     /// - `0.0.0.0:3000` binds to all network interfaces on port 3000.
-    pub bind: String,
+    pub bind: SocketAddr,
 
     /// Concurrent connections
     ///
     /// Specifies the limit of concurrent connections that the server can handle simultaneously.
-    pub concurrent: usize,
+    pub concurrent: u32,
 
     pub connect_timeout: Option<Duration>,
 
@@ -42,7 +42,7 @@ impl Default for Config {
     fn default() -> Self {
         Self {
             debug: false,
-            bind: "0.0.0.0:3000".to_string(),
+            bind: "0.0.0.0:3000".parse().unwrap(),
             concurrent: 1024,
             connect_timeout: Some(Duration::from_secs(10)),
             cidr: None,
