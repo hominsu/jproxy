@@ -1,0 +1,21 @@
+services:
+  jproxy:
+    image: hominsu/jproxy:latest
+    container_name: jproxy
+    restart: always
+    cap_add:
+      - NET_ADMIN
+    environment:
+      - TZ=Asia/Shanghai
+    volumes:
+      - "../configs:/data/conf"
+    ports:
+      - "3000:3000"
+    networks:
+      net:
+        aliases:
+          - jproxy
+
+networks:
+  net:
+    driver: bridge
