@@ -3,6 +3,8 @@ mod connect;
 mod error;
 mod http;
 mod proxy;
+#[cfg(target_os = "linux")]
+mod route;
 mod serve;
 
 use clap::{Args, Parser, Subcommand};

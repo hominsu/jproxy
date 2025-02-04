@@ -63,3 +63,7 @@ hyper-util = { version = "0.1", features = ["client-legacy", "http1", "server", 
 tower-service = { version = "0.3" }
 
 ipnet = { version = "2.11", features = ["serde"] }
+
+[target.'cfg(target_os = "linux")'.dependencies]
+rtnetlink = "0.14.1"
+netlink-packet-route = "0.19.0"

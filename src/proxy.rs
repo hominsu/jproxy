@@ -65,6 +65,14 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
         .build()?;
 
     runtime.block_on(async move {
+        #[cfg(target_os = "linux")]
+        {
+            let cidr = config.read().unwrap().cidr;
+            if let Some(cidr) = cidr {
+                crate::route::ip_route_add_cidr(cidr).await;
+            }
+        }
+
         let http_proxy = HttpProxy::new(config);
 
         let socket = match bind {
