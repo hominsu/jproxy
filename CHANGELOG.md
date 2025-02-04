@@ -5,19 +5,55 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.0 (2025-02-04)
+
+### New Features
+
+ - <csr-id-cd692c1a1171777cc8df0a99e65488f50e280d08/> implement route adding functionality for linux target
+   - Add a new `route` module and conditionally include it on linux.
+   - Add a function to add a route based on a CIDR on linux.
+
+### Other
+
+ - <csr-id-2d4f527fa53108052c18a71cddcfdf54209c68f8/> add Docker support for building and deploying
+   - Add a GitHub action workflow for building and pushing Docker images on release
+   - Add a Dockerfile for building the application, using multi-stage builds for optimization
+   - Add a docker-bake.hcl file for defining Docker build targets and configurations
+   - Add a docker-compose.yml file for local development and deployment using Docker Compose
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 2 commits contributed to the release over the course of 1 calendar day.
+ - 1 day passed between releases.
+ - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Implement route adding functionality for linux target ([`cd692c1`](https://github.com/hominsu/jproxy/commit/cd692c1a1171777cc8df0a99e65488f50e280d08))
+    - Add Docker support for building and deploying ([`2d4f527`](https://github.com/hominsu/jproxy/commit/2d4f527fa53108052c18a71cddcfdf54209c68f8))
+</details>
+
 ## v0.1.5 (2025-02-03)
 
 ### New Features
 
  - <csr-id-328e00d45dd7b22e14196bbef8d89d8a1a12c27c/> implement configurable memory allocators
    - Add feature flags for memory allocators, and set a global allocator based on feature flags.
-   - Add support for mimalloc, rpmalloc, snmalloc, and tikv-jemallocator.
+- Add support for mimalloc, rpmalloc, snmalloc, and tikv-jemallocator.
 
 ### Commit Statistics
 
 <csr-read-only-do-not-edit/>
 
- - 1 commit contributed to the release.
+ - 2 commits contributed to the release.
  - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
 
@@ -28,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release jproxy v0.1.5 ([`5a9abb3`](https://github.com/hominsu/jproxy/commit/5a9abb3c7cf48171f4e879150cd6cf425469b9f3))
     - Implement configurable memory allocators ([`328e00d`](https://github.com/hominsu/jproxy/commit/328e00d45dd7b22e14196bbef8d89d8a1a12c27c))
 </details>
 
@@ -39,7 +76,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  - <csr-id-f3c77222cd53496c1a410a7870c0e07f49b4aebf/> CIDR IP address generation
    - Implement a more efficient way of picking a random IP within a CIDR.
-- Fix capacity overflow issue
 
 ### Refactor
 
@@ -68,6 +104,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - CIDR IP address generation ([`f3c7722`](https://github.com/hominsu/jproxy/commit/f3c77222cd53496c1a410a7870c0e07f49b4aebf))
     - Server socket configuration ([`b6df33f`](https://github.com/hominsu/jproxy/commit/b6df33f305b82b661ad7288d344f89d8998ed390))
 </details>
+
+<csr-unknown>
+Fix capacity overflow issue<csr-unknown/>
 
 ## v0.1.3 (2025-01-31)
 
