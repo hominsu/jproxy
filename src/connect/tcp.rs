@@ -132,7 +132,7 @@ where
                 }
             };
 
-            println!("Assigning local address: {:?}", addr);
+            tracing::trace!("assigning local address: {:?}", addr);
 
             self.set_local_address(Some(addr))
         }
