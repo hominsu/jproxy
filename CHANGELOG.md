@@ -5,13 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.0.1 (2025-02-10)
+
+### New Features
+
+ - <csr-id-9d44e47f3649e1cf5d807556619347881d140c01/> improve logging for local address assignments
+   - Use `tracing::trace!` instead of `println!` for assigning the local address.
+
+### Commit Statistics
+
+<csr-read-only-do-not-edit/>
+
+ - 1 commit contributed to the release.
+ - 1 commit was understood as [conventional](https://www.conventionalcommits.org).
+ - 0 issues like '(#ID)' were seen in commit messages
+
+### Commit Details
+
+<csr-read-only-do-not-edit/>
+
+<details><summary>view details</summary>
+
+ * **Uncategorized**
+    - Improve logging for local address assignments ([`9d44e47`](https://github.com/hominsu/jproxy/commit/9d44e47f3649e1cf5d807556619347881d140c01))
+</details>
+
 ## v1.0.0 (2025-02-04)
+
+<csr-id-2d4f527fa53108052c18a71cddcfdf54209c68f8/>
 
 ### New Features
 
  - <csr-id-cd692c1a1171777cc8df0a99e65488f50e280d08/> implement route adding functionality for linux target
    - Add a new `route` module and conditionally include it on linux.
-   - Add a function to add a route based on a CIDR on linux.
+- Add a function to add a route based on a CIDR on linux.
 
 ### Other
 
@@ -25,7 +52,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <csr-read-only-do-not-edit/>
 
- - 2 commits contributed to the release over the course of 1 calendar day.
+ - 3 commits contributed to the release over the course of 1 calendar day.
  - 1 day passed between releases.
  - 2 commits were understood as [conventional](https://www.conventionalcommits.org).
  - 0 issues like '(#ID)' were seen in commit messages
@@ -37,6 +64,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 <details><summary>view details</summary>
 
  * **Uncategorized**
+    - Release jproxy v1.0.0 ([`913cffc`](https://github.com/hominsu/jproxy/commit/913cffc7b61050fd01ca6343ab8ee5f0d8e780ca))
     - Implement route adding functionality for linux target ([`cd692c1`](https://github.com/hominsu/jproxy/commit/cd692c1a1171777cc8df0a99e65488f50e280d08))
     - Add Docker support for building and deploying ([`2d4f527`](https://github.com/hominsu/jproxy/commit/2d4f527fa53108052c18a71cddcfdf54209c68f8))
 </details>
@@ -47,7 +75,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
  - <csr-id-328e00d45dd7b22e14196bbef8d89d8a1a12c27c/> implement configurable memory allocators
    - Add feature flags for memory allocators, and set a global allocator based on feature flags.
-- Add support for mimalloc, rpmalloc, snmalloc, and tikv-jemallocator.
 
 ### Commit Statistics
 
@@ -67,6 +94,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - Release jproxy v0.1.5 ([`5a9abb3`](https://github.com/hominsu/jproxy/commit/5a9abb3c7cf48171f4e879150cd6cf425469b9f3))
     - Implement configurable memory allocators ([`328e00d`](https://github.com/hominsu/jproxy/commit/328e00d45dd7b22e14196bbef8d89d8a1a12c27c))
 </details>
+
+<csr-unknown>
+Add support for mimalloc, rpmalloc, snmalloc, and tikv-jemallocator.<csr-unknown/>
 
 ## v0.1.4 (2025-02-02)
 
@@ -104,9 +134,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
     - CIDR IP address generation ([`f3c7722`](https://github.com/hominsu/jproxy/commit/f3c77222cd53496c1a410a7870c0e07f49b4aebf))
     - Server socket configuration ([`b6df33f`](https://github.com/hominsu/jproxy/commit/b6df33f305b82b661ad7288d344f89d8998ed390))
 </details>
-
-<csr-unknown>
-Fix capacity overflow issue<csr-unknown/>
 
 ## v0.1.3 (2025-01-31)
 
