@@ -6,10 +6,10 @@ use tokio::sync::watch;
 use tokio::{signal, sync::watch::Sender};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use crate::config::{manager, Config};
+use crate::Bootstrap;
+use crate::config::{Config, manager};
 use crate::http::HttpProxy;
 use crate::serve::serve;
-use crate::Bootstrap;
 
 pub async fn shutdown_signal(tx: Arc<Sender<()>>) {
     let ctrl_c = async {
@@ -60,8 +60,16 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
         .with(tracing_subscriber::fmt::layer())
         .init();
 
+    let cpus = std::thread::available_parallelism()?;
+
+    tracing::info!("OS: {}", std::env::consts::OS);
+    tracing::info!("Arch: {}", std::env::consts::ARCH);
+    tracing::info!("CPUs: {}", cpus);
+    tracing::info!("Concurrent: {}", concurrent);
+
     let runtime = tokio::runtime::Builder::new_multi_thread()
         .enable_all()
+        .worker_threads(cpus.into())
         .build()?;
 
     runtime.block_on(async move {
@@ -85,7 +93,7 @@ pub fn run(args: Bootstrap) -> crate::Result<()> {
 
         let listener = socket.listen(concurrent)?;
 
-        tracing::info!("listening on {}", listener.local_addr()?);
+        tracing::info!("Listening on {}", listener.local_addr()?);
 
         let (tx, rx) = watch::channel(());
         let tx = Arc::new(tx);
