@@ -1,10 +1,10 @@
 use futures_util::TryStreamExt;
 use ipnet::IpNet;
+use netlink_packet_route::AddressFamily;
 use netlink_packet_route::route::{
     RouteAddress, RouteAttribute, RouteProtocol, RouteScope, RouteType,
 };
-use netlink_packet_route::AddressFamily;
-use rtnetlink::{new_connection, Error, Handle, IpVersion};
+use rtnetlink::{Error, Handle, IpVersion, new_connection};
 
 const LOCAL_TABLE_ID: u8 = 255;
 
