@@ -1,10 +1,8 @@
 [package]
 name = "jproxy"
 version = "1.0.1"
-edition = "2024"
-authors = [
-    "Homing So <i@homing.so>"
-]
+edition = "2021"
+authors = ["Homing So <i@homing.so>"]
 description = "Just a proxy"
 license = "MIT"
 readme = "README.md"
@@ -12,6 +10,7 @@ repository = "https://github.com/hominsu/jproxy"
 keywords = ["proxy", "http"]
 categories = ["network-programming", "web-programming"]
 exclude = ["configs", "deploy", ".*"]
+rust-version = "1.84"
 
 [profile.release]
 opt-level = 3
@@ -21,7 +20,6 @@ codegen-units = 1
 panic = "abort"
 
 [features]
-default = ["mimalloc"]
 mimalloc = ["dep:mimalloc"]
 rpmalloc = ["dep:rpmalloc"]
 snmalloc = ["dep:snmalloc-rs"]
