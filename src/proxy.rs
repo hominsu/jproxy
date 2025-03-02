@@ -6,10 +6,10 @@ use tokio::sync::watch;
 use tokio::{signal, sync::watch::Sender};
 use tracing_subscriber::{layer::SubscriberExt, util::SubscriberInitExt};
 
-use crate::Bootstrap;
-use crate::config::{Config, manager};
+use crate::config::{manager, Config};
 use crate::http::HttpProxy;
 use crate::serve::serve;
+use crate::Bootstrap;
 
 pub async fn shutdown_signal(tx: Arc<Sender<()>>) {
     let ctrl_c = async {

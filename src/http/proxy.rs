@@ -5,8 +5,8 @@ use std::task::{Context, Poll};
 
 use bytes::Bytes;
 use http::{Method, StatusCode, Uri};
-use http_body_util::{BodyExt, Empty, Full, combinators::BoxBody};
-use hyper::{Request, Response, body::Incoming, upgrade::Upgraded};
+use http_body_util::{combinators::BoxBody, BodyExt, Empty, Full};
+use hyper::{body::Incoming, upgrade::Upgraded, Request, Response};
 use hyper_util::client::legacy::Client;
 use hyper_util::rt::{TokioExecutor, TokioIo};
 use tokio::net::TcpStream;

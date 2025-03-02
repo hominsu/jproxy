@@ -15,7 +15,7 @@ use tokio::net::{TcpSocket, TcpStream};
 use tokio::time::Sleep;
 use tower_service::Service;
 
-use super::dns::{self, Resolve, Resolver, resolve};
+use super::dns::{self, resolve, Resolve, Resolver};
 use super::error::{DnsError, Error, InvalidUriError, TcpError};
 
 #[derive(Clone)]
